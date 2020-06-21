@@ -21,6 +21,7 @@ class Photo(models.Model):
     model = None
     global graph
     with graph.as_default():
+      print("car")
       model = load_model(self.MODEL_FILE_PATH)
 
       img_data = self.image.read()
@@ -38,4 +39,9 @@ class Photo(models.Model):
       predicted = result.argmax()
       percentage = int(result[predicted] * 100)
 
-      print(self.classes[predicted], percentage)
+      return self.classes[predicted], percentage
+  def image_src(self):
+    with self.image.open() as img:
+      base64_img = base64.b64encode(img.read()).decode()
+
+      return 'data:' + img.file.content_type + ';base64,' + base64_img

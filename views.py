@@ -19,6 +19,15 @@ def predict(request):
     raise ValueError('Formが不正です')
 
   photo = Photo(image=form.cleaned_data['image'])
-  predict, percentage = photo.predict()
+  predicted, percentage = photo.predict()
 
-  return HttpResponse("")
+  template = loader.get_template('carbike/result.html')
+
+  context = {
+    'photo_name': photo.image.name,
+    'photo_data': photo.image_src(),
+    'predicted': predicted,
+    'percentage': percentage,
+  }
+
+  return HttpResponse(template.render(context, request))
